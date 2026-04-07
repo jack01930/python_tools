@@ -1,0 +1,5 @@
+# 忽略Python编译的字节码文件
+__pycache__/
+*.pyc
+*.pyo
+*.pyd

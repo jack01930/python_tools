@@ -1,0 +1,25 @@
+# 1. Python编译缓存文件
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 2. 数据库文件
+*.db
+*.sqlite
+*.sqlite3
+
+# 3. 虚拟环境与敏感配置
+venv/
+env/
+.env
+
+# 4. IDE/编辑器个人配置
+.vscode/
+.idea/
+
+# 5. 忽略记账项目的虚拟环境文件夹
+venv_personal_finance/
+
+logs/
+
