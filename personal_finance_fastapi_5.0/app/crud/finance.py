@@ -18,10 +18,12 @@ def create_record(request_id:str,amount:float,category:str,remark:str='无',user
 
         affect_rows=cursor.rowcount
         if affect_rows >0:
-            print(f"[INFO] 记账记录新增成功,request_id:{request_id},amount:{amount}")
+            from app.config.logger import info as logger_info
+            logger_info(f"[INFO] 记账记录新增成功,request_id:{request_id},amount:{amount}")
             return True #成功返回成功
         else:
-            print(f"[WARN] 重复记账请求已被忽略,request:{request_id}")
+            from app.config.logger import warn as logger_warn
+            logger_warn(f"[WARN] 重复记账请求已被忽略,request:{request_id}")
             return False #失败返回失败，原来不管什么都是return True，api.py无法判断逻辑
 
 def get_records_by_year_month(year:int,month:int,page:int=1,page_size:int=5,user_id:int=None):
@@ -67,4 +69,14 @@ def clear_month_records(year:int,month:int,user_id:int):
         conn.commit()
         return cursor.rowcount
     
-        
+def get_today_max_serial_num(user_id:int):
+    today=datetime.now().strftime("%Y-%m-%d")
+    with get_db() as conn:
+        cursor=conn.cursor()
+        cursor.execute("""
+            SELECT MAX(CAST(SUBSTR(request_id,12) AS INTEGER))
+            FROM finance_records
+            WHERE request_id LIKE ? AND user_id = ?
+        """,(f"{today}%",user_id))
+        max_num=cursor.fetchone()[0]
+        return max_num if max_num else 0
