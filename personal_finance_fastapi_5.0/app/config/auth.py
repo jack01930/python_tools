@@ -3,6 +3,7 @@ from jose import JWTError, jwt # 生成/解析JWT token的核心库
 from passlib.context import CryptContext # 密码哈希加密的库
 
 from app.config.settings import settings
+from app.config.logger import info as logger_info, warn as logger_warn, error as logger_error
 
 pwd_context=CryptContext(schemes=['bcrypt'],deprecated='auto') #指定用不可逆bcrypt 算法加密密码，自动弃用过时的加密方式
 
@@ -24,11 +25,9 @@ def create_access_token(data:dict,expires_delta:timedelta=None):
 
 def get_user_id_from_token(token:str):
     try:
-        print(f"正在验证令牌: {token[:20]}...")  # 只打印前20个字符
+        logger_info(f"正在验证令牌")
         payload=jwt.decode(token,SECRET_KEY,algorithms=[ALGORITHM])
-        print(f"解码后的payload: {payload}")
         sub = payload.get('sub')
-        print(f"sub值: {sub}, 类型: {type(sub)}")
         if sub is None:
             return None
         try:
@@ -36,6 +35,5 @@ def get_user_id_from_token(token:str):
         except (TypeError, ValueError):
             return None
     except JWTError as e:
-        print(f"JWT解码失败: {str(e)}")
+        logger_error(f"JWT解码失败: {str(e)}")
         return None
-
