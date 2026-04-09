@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 import uvicorn
 from contextlib import asynccontextmanager
 
+from app.api.v1.ai import router as ai_router
 from app.api.v1.user import router as user_router
 from app.api.v1.finance import router as finance_router
 from app.config.database import init_db
@@ -54,6 +55,7 @@ async def global_exception_handler(
 
 app.include_router(finance_router)
 app.include_router(user_router)
+app.include_router(ai_router)
 
 def main(host:str="127.0.0.1",port:int=8000)->None:
     uvicorn.run(
