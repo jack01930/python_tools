@@ -48,6 +48,6 @@ class RecordAddInternal(RecordAddRequest):
     @classmethod #标记这是类方法
     def generate_request_id(cls,values:dict): #cls代表这是类本身，values则是前端的原始参数字典
         today_time=datetime.now().strftime('%Y-%m-%d')
-        values['request_id']=f'{today_time}-{values['serial_num']:03d}'        
+        values['request_id']=f'{today_time}-{values["serial_num"]:03d}'        
         return values
 
