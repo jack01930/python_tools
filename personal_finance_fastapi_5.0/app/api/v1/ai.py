@@ -7,7 +7,7 @@ from app.api.v1.user import get_current_user
 from app.schemas.ai import AIFinanceRequest
 from app.schemas.common import SuccessResponse
 from app.schemas.response import success_response
-from app.services.ai.ai_record_service import ai_auto_record
+from app.services.ai.record_service import ai_auto_record
 from app.config.logger import error as logger_error ,info as logger_info
 
 router=APIRouter(prefix='/ai',tags=['AI记账'])
