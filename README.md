@@ -292,8 +292,8 @@ autopep8 --in-place --aggressive --aggressive <file>
 ## 📞 支持与联系
 
 如有问题或建议，请通过以下方式联系：
-- GitHub Issues: [项目 Issues 页面](https://github.com/yourusername/personal_finance_fastapi_5.0/issues)
-- Email: your.email@example.com
+- GitHub Issues: [项目 Issues 页面](https://github.com/jack01930/python_tools)
+- Email: 2140469539@qq.com
 
 ---
 
