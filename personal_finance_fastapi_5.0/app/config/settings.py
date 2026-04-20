@@ -11,4 +11,7 @@ class Settings(BaseSettings):
     ALGORITHM:str="HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES:int=30
 
+    QWEN_API_KEY:str=os.getenv("QWEN_API_KEY","")
+    QWEN_BASE_URL:str=os.getenv("QWEN_BASE_URL","https://dashscope.aliyuncs.com/compatible-mode/v1")
+    QWEN_MODEL:str=os.getenv("QWEN_MODEL","qwen-turbo")
 settings=Settings()
