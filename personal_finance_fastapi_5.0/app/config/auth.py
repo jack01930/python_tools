@@ -1,3 +1,4 @@
+#app/config/auth.py
 from datetime import datetime, timezone, timedelta # 处理时间（设置token过期时间）
 from jose import JWTError, jwt # 生成/解析JWT token的核心库
 from passlib.context import CryptContext # 密码哈希加密的库

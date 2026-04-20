@@ -1,3 +1,4 @@
+#app/schemas/finance.py
 from pydantic import BaseModel,Field,model_validator
 from typing import Optional
 from datetime import datetime
