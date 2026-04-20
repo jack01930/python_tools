@@ -1,4 +1,4 @@
-
+#app/utils/finance/finance_utils
 from app.crud.finance import get_today_max_serial_num as _get_today_max_serial_num
 from app.config.logger import warn as logger_warn
 

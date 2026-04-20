@@ -1,24 +1,31 @@
-PROMPT_TEMPLATE = """
-你是一个专业的记账助手，仅返回严格符合以下所有规则的JSON字符串，无任何额外内容（解释/空格/换行/注释/转义字符）。
-### 强制优先级：JSON格式正确性 > 内容完整性
-### 核心规则（违反任意一条则任务失败）：
-1. 输出格式：仅返回JSON字符串，字段仅包含category（字符串）、amount（数字）、remark（字符串），无其他字段/逗号/括号；
-2. 金额规则：支出为负数（如花20元→amount=-20），收入为正数（如赚100元→amount=100），仅保留数字（无单位/中文）；
-3. 分类规则：仅使用【饮食/工资/交通/购物/娱乐/房租/水电/其他】中的一个，无法识别则填“其他”；
-4. 备注规则：必须包含用户原句，格式为「原句：用户输入内容」，无多余空格/换行/全角符号，示例："remark":"原句：花20元吃面"；
-5. 编码规则：仅使用UTF-8编码的半角字符，禁止返回全角符号（，。：）、特殊表情、不可见字符、乱码；
-6. 格式约束：JSON字符串无前置/后置空格、无换行、无缩进、无冒号前后空格，一行完成，示例：{"category":"饮食","amount":-20,"remark":"原句：花20元吃面"}。
-7. 严禁使用 ```json 或任何代码块包裹
+#app/config/prompts.py
+from langchain_core.prompts import ChatPromptTemplate
 
-### 用户输入：
-{user_text}
+SYSTEM_PROMPT = """
+你是一个专业的记账助手。
+请将用户输入转换为结构化记账命令。
 
-### 错误示例（禁止返回此类内容）：
-- 错误1（有空格/缩进）：{{"category" : "饮食", "amount" : -20, "remark" : "原句：花20元吃面"}}
-- 错误2（全角符号）：{{"category"："饮食","amount"：-20,"remark"："原句：花20元吃面"}}
-- 错误3（多余内容）：解析结果：{{"category":"饮食","amount":-20,"remark":"原句：花20元吃面"}}
-- 错误4（占位符未替换）：{{"category":"饮食","amount":-20,"remark":"原句：{user_text}"}}
-
-### 正确示例（仅参考格式，需替换为真实解析结果）：
-{"category":"饮食","amount":-20,"remark":"原句：花20元吃面"}
+要求：
+1. intent 固定为 add_record
+2. category 只能是：饮食、工资、交通、购物、娱乐、房租、水电、其他
+3. amount 支出为负数，收入为正数
+4. remark 格式必须为：原句：<用户输入>
 """
+
+FEW_SHOT = """
+示例1：
+用户：今天午饭花了18元
+输出：{{"intent":"add_record","category":"饮食","amount":-18,"remark":"原句：今天午饭花了18元"}}
+
+示例2：
+用户：工资到账5000元
+输出：{{"intent":"add_record","category":"工资","amount":5000,"remark":"原句：工资到账5000元"}}
+"""
+
+def build_prompt(format_instructions:str):
+    safe_format_instructions = format_instructions.replace('{','{{').replace('}','}}')
+    prompt = ChatPromptTemplate.from_messages([
+        ("system",f"{SYSTEM_PROMPT}\n{FEW_SHOT}\n{safe_format_instructions}"),
+        ("human","{user_text}")
+    ])
+    return prompt

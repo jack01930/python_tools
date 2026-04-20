@@ -1,3 +1,4 @@
+#app/services/finance/finance_service.py
 from sqlite3 import Error as SQLiteError
 from app.crud.finance import create_record, get_records_by_year_month, delete_record, clear_month_records
 from app.config.logger import error as logger_error, warn as logger_warn, info as logger_info
@@ -88,7 +89,7 @@ def delete_finance_record(record_id, confirm, user_id):
         success = delete_record(record_id,user_id)
         if not success:
             raise ValueError(f'ID{record_id}不存在或删除失败')
-        return f'ID{record_id}删除成功'
+        return {'message': f'ID{record_id}删除成功'}
     except SQLiteError as e:
         logger_error(f"[DELETE] 数据库异常 | ID:{record_id} | {str(e)}")
         raise e
@@ -107,7 +108,7 @@ def clear_finance_month(year, month, confirm, user_id):
         total = clear_month_records(year, month, user_id)
         if total == 0:
             raise ValueError(f'{year}年{month}月无记录可清空')
-        return f'{year}年{month}月 记录已清空'
+        return {'message':f'{year}年{month}月 记录已清空'}
     except SQLiteError as e:
         logger_warn(f"[CLEAR] 数据库异常 | {year}-{month} | {str(e)}")
         raise e

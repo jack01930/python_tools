@@ -1,3 +1,4 @@
+#app/config/database.py
 import sqlite3
 import os
 from contextlib import contextmanager
@@ -36,6 +37,23 @@ def init_db():
         """)
         #给旧表加user_id（关联用户）
         # 3. 兼容低版本SQLite：先检查user_id列是否存在，不存在再添加
+        # 4. 创建 AI 对话历史表
+        conn.execute("""
+        CREATE TABLE IF NOT EXISTS ai_conversation_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL REFERENCES users(id),
+            session_id TEXT NOT NULL,
+            role TEXT NOT NULL,
+            content TEXT NOT NULL,
+            slots_filled TEXT,
+            metadata TEXT,
+            created_at TEXT NOT NULL DEFAULT (datetime('now'))
+        );
+        """)
+        # 创建索引提升查询性能
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_user_session ON ai_conversation_history(user_id, session_id);")
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_created_at ON ai_conversation_history(created_at);")
+        logger_info("AI对话历史表初始化完成")
         cursor = conn.cursor()
         # 查询finance_records表的所有列名
         cursor.execute("PRAGMA table_info(finance_records);")
